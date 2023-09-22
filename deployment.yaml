@@ -51,7 +51,7 @@ spec:
         configMap:
           name: reset-script
 ---
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: redis
@@ -60,6 +60,7 @@ spec:
   selector:
     matchLabels:
       app: redis
+  serviceName: "redis"
   template:
     metadata:
       labels:
@@ -70,3 +71,15 @@ spec:
         image: redis
         command: ["redis-server"]
         args: ["--save", "60", "1", "--loglevel", "warning"]
+        volumeMounts:
+        - name: redis-volume
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-volume
+    spec:
+      storageClassName: nfs-client
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 100Mi
