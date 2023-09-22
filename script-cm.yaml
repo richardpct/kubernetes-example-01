@@ -1,0 +1,42 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: count-script
+data:
+  count.py: |
+    #!/usr/bin/env python3
+
+    import redis
+
+    r = redis.Redis(
+                    host='redis.default.svc.cluster.local',
+                    port=6379)
+    count = r.incr('count')
+
+    print("Content-type: text/html")
+    print("")
+    print("<html><body>")
+    print("<p>Hello World!<br />counter: " + str(count) + "<br /></p>")
+    print("</body></html>")
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: reset-script
+data:
+  reset.py: |
+    #!/usr/bin/env python3
+
+    import redis
+
+    r = redis.Redis(
+                    host='redis.default.svc.cluster.local',
+                    port=6379)
+    r.set('count', 0)
+
+    print("Content-type: text/html")
+    print("")
+    print("<html><body>")
+    print("<p>Reset counter!<br /></p>")
+    print("</body></html>")

@@ -1,0 +1,72 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: python
+        image: python
+        command: ["/bin/bash", "-c", "pip install redis; mkdir -p /var/lib/www/cgi-bin; install -m 755 /tmp/count-script/count.py /var/lib/www/cgi-bin/; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        volumeMounts:
+        - name: count-script
+          mountPath: /tmp/count-script
+      volumes:
+      - name: count-script
+        configMap:
+          name: count-script
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: python
+        image: python
+        command: ["/bin/bash", "-c", "pip install redis; mkdir -p /var/lib/www/cgi-bin; install -m 755 /tmp/reset-script/reset.py /var/lib/www/cgi-bin/; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        volumeMounts:
+        - name: reset-script
+          mountPath: /tmp/reset-script
+      volumes:
+      - name: reset-script
+        configMap:
+          name: reset-script
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        command: ["redis-server"]
+        args: ["--save", "60", "1", "--loglevel", "warning"]
