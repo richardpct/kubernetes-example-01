@@ -3,23 +3,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: page-counter
+  annotations:
+    haproxy.org/path-rewrite: (.*) /cgi-bin/\1.py
 spec:
   ingressClassName: haproxy
   rules:
-    - host: "count.example.com"
+    - host: "example.com"
       http:
         paths:
-          - path: /
+          - path: /count
             pathType: Prefix
             backend:
               service:
                 name: frontend
                 port:
                   number: 80
-    - host: "reset.example.com"
-      http:
-        paths:
-          - path: /
+          - path: /reset
             pathType: Prefix
             backend:
               service:
