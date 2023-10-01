@@ -74,6 +74,7 @@ spec:
         volumeMounts:
         - name: redis-volume
           mountPath: /data
+      terminationGracePeriodSeconds: 0
   volumeClaimTemplates:
   - metadata:
       name: redis-volume
