@@ -16,11 +16,17 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/bin/bash", "-c", "pip install redis; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        command: ["/opt/bin/init.sh"]
         volumeMounts:
+        - name: init-script
+          mountPath: /opt/bin
         - name: count-script
           mountPath: /var/lib/www/cgi-bin
       volumes:
+      - name: init-script
+        configMap:
+          name: init-script
+          defaultMode: 0755
       - name: count-script
         configMap:
           name: count-script
@@ -43,11 +49,17 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/bin/bash", "-c", "pip install redis; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        command: ["/opt/bin/init.sh"]
         volumeMounts:
+        - name: init-script
+          mountPath: /opt/bin
         - name: reset-script
           mountPath: /var/lib/www/cgi-bin
       volumes:
+      - name: init-script
+        configMap:
+          name: init-script
+          defaultMode: 0755
       - name: reset-script
         configMap:
           name: reset-script
