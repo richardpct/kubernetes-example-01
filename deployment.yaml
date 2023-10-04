@@ -16,14 +16,15 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/bin/bash", "-c", "pip install redis; mkdir -p /var/lib/www/cgi-bin; install -m 755 /tmp/count-script/count.py /var/lib/www/cgi-bin/; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        command: ["/bin/bash", "-c", "pip install redis; python3 -m http.server 80 --cgi --directory /var/lib/www"]
         volumeMounts:
         - name: count-script
-          mountPath: /tmp/count-script
+          mountPath: /var/lib/www/cgi-bin
       volumes:
       - name: count-script
         configMap:
           name: count-script
+          defaultMode: 0755
 ---
 kind: Deployment
 apiVersion: apps/v1
@@ -42,14 +43,15 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/bin/bash", "-c", "pip install redis; mkdir -p /var/lib/www/cgi-bin; install -m 755 /tmp/reset-script/reset.py /var/lib/www/cgi-bin/; python3 -m http.server 80 --cgi --directory /var/lib/www"]
+        command: ["/bin/bash", "-c", "pip install redis; python3 -m http.server 80 --cgi --directory /var/lib/www"]
         volumeMounts:
         - name: reset-script
-          mountPath: /tmp/reset-script
+          mountPath: /var/lib/www/cgi-bin
       volumes:
       - name: reset-script
         configMap:
           name: reset-script
+          defaultMode: 0755
 ---
 kind: StatefulSet
 apiVersion: apps/v1
