@@ -4,11 +4,14 @@ kind: Ingress
 metadata:
   name: page-counter
   annotations:
-    haproxy.org/path-rewrite: (.*) /cgi-bin/\1.py
+    haproxy.org/path-rewrite: |
+      /count /cgi-bin/count.py
+      /reset /cgi-bin/reset.py
+      /grafana/(.*) /\1
 spec:
   ingressClassName: haproxy
   rules:
-    - host: "example.com"
+    - host: "www.pidrou.com"
       http:
         paths:
           - path: /count
@@ -25,3 +28,13 @@ spec:
                 name: backend
                 port:
                   number: 80
+    - host: "grafana.pidrou.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-grafana-operator-grafana-service
+                port:
+                  number: 3000
