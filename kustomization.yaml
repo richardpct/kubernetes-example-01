@@ -1,0 +1,9 @@
+resources:
+- script-cm.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
+patches:
+  - path: set-host.patch.yaml
+    target:
+      labelSelector: "app=page-counter"
