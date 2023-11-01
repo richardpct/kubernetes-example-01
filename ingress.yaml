@@ -3,8 +3,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: page-counter
-  labels:
-    app: page-counter
   annotations:
     haproxy.org/path-rewrite: |
       /count /cgi-bin/count.py

@@ -4,6 +4,9 @@ resources:
 - service.yaml
 - ingress.yaml
 patches:
-  - path: set-host.patch.yaml
-    target:
-      labelSelector: "app=page-counter"
+  - target:
+      group: networking.k8s.io
+      version: v1
+      kind: Ingress
+      name: page-counter
+    path: set-host.patch.yaml
