@@ -93,7 +93,7 @@ spec:
   - metadata:
       name: redis-volume
     spec:
-      storageClassName: nfs-client
+      storageClassName: longhorn
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
