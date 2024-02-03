@@ -15,14 +15,17 @@ spec:
     spec:
       containers:
       - name: python
-        image: python
-        command: ["/opt/bin/count.sh"]
+        image: python:slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - pip install --upgrade pip;
+            pip install redis;
+            /var/www/count;
         volumeMounts:
-        - name: local-pip
+        - name: pip-local
           mountPath: /var/www/.local
-        - name: init-script
-          mountPath: /opt/bin/count.sh
-          subPath: count.sh
+        - name: pip-cache
+          mountPath: /var/www/.cache
         - name: count-script
           mountPath: /var/www/count
           subPath: count.py
@@ -30,13 +33,12 @@ spec:
         runAsUser: 33
         runAsGroup: 33
       volumes:
-      - name: local-pip
+      - name: pip-local
         emptyDir:
           sizeLimit: 100Mi
-      - name: init-script
-        configMap:
-          name: init-script
-          defaultMode: 0755
+      - name: pip-cache
+        emptyDir:
+          sizeLimit: 100Mi
       - name: count-script
         configMap:
           name: count-script
@@ -58,14 +60,17 @@ spec:
     spec:
       containers:
       - name: python
-        image: python
-        command: ["/opt/bin/reset.sh"]
+        image: python:slim
+        command: ["/bin/sh", "-c"]
+        args:
+          - pip install --upgrade pip;
+            pip install redis;
+            /var/www/reset;
         volumeMounts:
-        - name: local-pip
+        - name: pip-local
           mountPath: /var/www/.local
-        - name: init-script
-          mountPath: /opt/bin/reset.sh
-          subPath: reset.sh
+        - name: pip-cache
+          mountPath: /var/www/.cache
         - name: reset-script
           mountPath: /var/www/reset
           subPath: reset.py
@@ -73,13 +78,12 @@ spec:
         runAsUser: 33
         runAsGroup: 33
       volumes:
-      - name: local-pip
+      - name: pip-local
         emptyDir:
           sizeLimit: 100Mi
-      - name: init-script
-        configMap:
-          name: init-script
-          defaultMode: 0755
+      - name: pip-cache
+        emptyDir:
+          sizeLimit: 100Mi
       - name: reset-script
         configMap:
           name: reset-script

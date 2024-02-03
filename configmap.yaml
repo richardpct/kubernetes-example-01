@@ -2,26 +2,6 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: init-script
-data:
-  count.sh: |
-    #!/bin/bash
-
-    set -e
-
-    pip install redis
-    /var/www/count
-  reset.sh: |
-    #!/bin/bash
-
-    set -e
-
-    pip install redis
-    /var/www/reset
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
   name: count-script
 data:
   count.py: |
