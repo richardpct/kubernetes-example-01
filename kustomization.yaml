@@ -1,12 +1,12 @@
 resources:
-- script-cm.yaml
+- configmap.yaml
 - deployment.yaml
 - service.yaml
 - ingress.yaml
-patches:
-  - target:
-      group: networking.k8s.io
-      version: v1
-      kind: Ingress
-      name: page-counter
-    path: set-host.patch.yaml
+#patches:
+#  - target:
+#      group: networking.k8s.io
+#      version: v1
+#      kind: Ingress
+#      name: page-counter
+#    path: set-host.patch.yaml

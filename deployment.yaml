@@ -18,13 +18,21 @@ spec:
         image: python
         command: ["/opt/bin/count.sh"]
         volumeMounts:
+        - name: local-pip
+          mountPath: /var/www/.local
         - name: init-script
           mountPath: /opt/bin/count.sh
           subPath: count.sh
         - name: count-script
-          mountPath: /var/lib/www/count
+          mountPath: /var/www/count
           subPath: count.py
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
       volumes:
+      - name: local-pip
+        emptyDir:
+          sizeLimit: 100Mi
       - name: init-script
         configMap:
           name: init-script
@@ -53,13 +61,21 @@ spec:
         image: python
         command: ["/opt/bin/reset.sh"]
         volumeMounts:
+        - name: local-pip
+          mountPath: /var/www/.local
         - name: init-script
           mountPath: /opt/bin/reset.sh
           subPath: reset.sh
         - name: reset-script
-          mountPath: /var/lib/www/reset
+          mountPath: /var/www/reset
           subPath: reset.py
+      securityContext:
+        runAsUser: 33
+        runAsGroup: 33
       volumes:
+      - name: local-pip
+        emptyDir:
+          sizeLimit: 100Mi
       - name: init-script
         configMap:
           name: init-script
