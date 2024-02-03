@@ -3,15 +3,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: page-counter
-  annotations:
-    haproxy.org/path-rewrite: |
-      /count /cgi-bin/count.py
-      /reset /cgi-bin/reset.py
-      /grafana/(.*) /\1
 spec:
   ingressClassName: haproxy
   rules:
-    - host: "www.example.com"
+    - host: "www2.unixworld.io"
       http:
         paths:
           - path: /count
@@ -30,5 +25,5 @@ spec:
                   number: 80
   tls:
   - hosts:
-    - www.example.com
-    secretName: example-cert
+    - www2.unixworld.io
+    secretName: www2-cert

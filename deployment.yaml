@@ -16,12 +16,14 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/opt/bin/init.sh"]
+        command: ["/opt/bin/count.sh"]
         volumeMounts:
         - name: init-script
-          mountPath: /opt/bin
+          mountPath: /opt/bin/count.sh
+          subPath: count.sh
         - name: count-script
-          mountPath: /var/lib/www/cgi-bin
+          mountPath: /var/lib/www/count
+          subPath: count.py
       volumes:
       - name: init-script
         configMap:
@@ -49,12 +51,14 @@ spec:
       containers:
       - name: python
         image: python
-        command: ["/opt/bin/init.sh"]
+        command: ["/opt/bin/reset.sh"]
         volumeMounts:
         - name: init-script
-          mountPath: /opt/bin
+          mountPath: /opt/bin/reset.sh
+          subPath: reset.sh
         - name: reset-script
-          mountPath: /var/lib/www/cgi-bin
+          mountPath: /var/lib/www/reset
+          subPath: reset.py
       volumes:
       - name: init-script
         configMap:
