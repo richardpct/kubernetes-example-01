@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: page-counter
 spec:
-  ingressClassName: haproxy
+  ingressClassName: cilium
   rules:
     - host: "www2.unixworld.io"
       http:
