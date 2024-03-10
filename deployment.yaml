@@ -187,12 +187,21 @@ spec:
             port: 6379
           initialDelaySeconds: 5
           periodSeconds: 10
+      tolerations:
+        - effect: NoExecute
+          key: node.kubernetes.io/not-ready
+          operator: Exists
+          tolerationSeconds: 30
+        - effect: NoExecute
+          key: node.kubernetes.io/unreachable
+          operator: Exists
+          tolerationSeconds: 30
       terminationGracePeriodSeconds: 0
   volumeClaimTemplates:
   - metadata:
       name: redis-volume
     spec:
-      storageClassName: longhorn
+      storageClassName: longhorn-sc
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
