@@ -4,7 +4,7 @@ apiVersion: apps/v1
 metadata:
   name: frontend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
@@ -21,6 +21,25 @@ spec:
           - pip install --upgrade pip;
             pip install redis;
             /var/www/count;
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "500m"
+          limits:
+            memory: "64Mi"
+            cpu: "750m"
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
         volumeMounts:
         - name: pip-local
           mountPath: /var/www/.local
@@ -29,6 +48,15 @@ spec:
         - name: count-script
           mountPath: /var/www/count
           subPath: count.py
+      tolerations:
+        - effect: NoExecute
+          key: node.kubernetes.io/not-ready
+          operator: Exists
+          tolerationSeconds: 10
+        - effect: NoExecute
+          key: node.kubernetes.io/unreachable
+          operator: Exists
+          tolerationSeconds: 10
       securityContext:
         runAsUser: 33
         runAsGroup: 33
@@ -49,7 +77,7 @@ apiVersion: apps/v1
 metadata:
   name: backend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend
@@ -74,6 +102,34 @@ spec:
         - name: reset-script
           mountPath: /var/www/reset
           subPath: reset.py
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "500m"
+          limits:
+            memory: "64Mi"
+            cpu: "750m"
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      tolerations:
+        - effect: NoExecute
+          key: node.kubernetes.io/not-ready
+          operator: Exists
+          tolerationSeconds: 30
+        - effect: NoExecute
+          key: node.kubernetes.io/unreachable
+          operator: Exists
+          tolerationSeconds: 30
       securityContext:
         runAsUser: 33
         runAsGroup: 33
@@ -112,6 +168,25 @@ spec:
         volumeMounts:
         - name: redis-volume
           mountPath: /data
+        resources:
+          requests:
+            memory: "2Mi"
+            cpu: "20m"
+          limits:
+            memory: "32Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 6379
+        readinessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 5
+          periodSeconds: 10
       terminationGracePeriodSeconds: 0
   volumeClaimTemplates:
   - metadata:
